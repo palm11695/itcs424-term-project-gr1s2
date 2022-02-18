@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ha_pump/pages/welcome/welcom_screen.dart';
 import 'package:ha_pump/theme.dart';
+import 'package:ha_pump/pages/login/login_screen.dart';
+import 'package:ha_pump/pages/signup/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,16 +15,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Welcome to Flutter',
-      theme: appTheme,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Welcome to Flutter'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
+      title: 'Ha Pump',
+      theme: ThemeData(
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: Colors.white,
       ),
+      routes: {
+        '/': (context) => const WelcomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignUpScreen(),
+      },
+      initialRoute: '/',
     );
   }
 }
