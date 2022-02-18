@@ -4,6 +4,7 @@ import 'package:ha_pump/components/already_have_an_account_acheck.dart';
 import 'package:ha_pump/components/rounded_button.dart';
 import 'package:ha_pump/components/rounded_input_field.dart';
 import 'package:ha_pump/components/rounded_password_field.dart';
+import 'package:ha_pump/components/rounded_confirmed_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
@@ -32,6 +33,9 @@ class Body extends StatelessWidget {
               onChanged: (value) {},
             ),
             RoundedPasswordField(
+              onChanged: (value) {},
+            ),
+            RoundedConfirmedPasswordField(
               onChanged: (value) {},
             ),
             const RoundedButton(

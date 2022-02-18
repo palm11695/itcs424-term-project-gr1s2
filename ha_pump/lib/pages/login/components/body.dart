@@ -4,6 +4,7 @@ import 'package:ha_pump/components/already_have_an_account_acheck.dart';
 import 'package:ha_pump/components/rounded_button.dart';
 import 'package:ha_pump/components/rounded_input_field.dart';
 import 'package:ha_pump/components/rounded_password_field.dart';
+import 'package:ha_pump/components/rounded_confirmed_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
@@ -28,7 +29,7 @@ class Body extends StatelessWidget {
             //   "assets/icons/login.svg",
             //   height: size.height * 0.35,
             // ),
-            const Text("Waiting For Picture"),
+            const Text("Waiting For Banner/Picture"),
             SizedBox(height: size.height * 0.03),
             RoundedInputField(
               hintText: "Your Email",
