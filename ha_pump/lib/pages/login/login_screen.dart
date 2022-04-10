@@ -6,7 +6,7 @@ import 'package:ha_pump/components/already_have_an_account_acheck.dart';
 import 'package:ha_pump/components/text_field_container.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ha_pump/pages/welcome/welcom_screen.dart';
+import 'package:ha_pump/pages/finder/finder_screen.dart';
 import 'package:ha_pump/model/auth.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .then((value) {
                                       Navigator.pushReplacement(context,
                                           MaterialPageRoute(builder: (context) {
-                                        return const WelcomeScreen();
+                                        return const Finder();
                                       }));
                                     });
                                   } on FirebaseAuthException catch (e) {}
