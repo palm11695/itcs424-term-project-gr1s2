@@ -4,12 +4,18 @@ import 'package:ha_pump/pages/finder/components/background.dart';
 import 'package:ha_pump/pages/login/login_screen.dart';
 import 'package:ha_pump/theme.dart';
 
-class Finder extends StatelessWidget {
+class Finder extends StatefulWidget {
   const Finder({Key? key}) : super(key: key);
+  @override
+  _FinderState createState() => _FinderState();
+}
+
+class _FinderState extends State<Finder> {
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance.idTokenChanges().listen((User? user) {
+    auth.idTokenChanges().listen((User? user) {
       if (user == null) {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) {
@@ -18,6 +24,8 @@ class Finder extends StatelessWidget {
       }
     });
     Size size = MediaQuery.of(context).size;
+    String? currentEmail = auth.currentUser!.email;
+
     return Scaffold(
       body: Background(
         child: SingleChildScrollView(
@@ -25,10 +33,11 @@ class Finder extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                "HA PUMP",
+                "Welcome To Ha Pump!\n",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: size.height * 0.05),
+              Text(currentEmail!),
+              SizedBox(height: size.height * 0.02),
               // SvgPicture.asset(
               //   "assets/icons/chat.svg",
               //   height: size.height * 0.45,
