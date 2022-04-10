@@ -4,15 +4,18 @@ import 'package:ha_pump/theme.dart';
 
 class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
+  final TextEditingController controller;
   const RoundedPasswordField({
     Key? key,
     required this.onChanged,
+    required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
+        controller: controller,
         obscureText: true,
         onChanged: onChanged,
         cursorColor: kPrimaryColor,

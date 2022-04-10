@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "842408901380",
+    "project_id": "itcs424-flutter-project",
+    "storage_bucket": "itcs424-flutter-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842408901380:android:6503835e9d48a19a1fae51",
+        "android_client_info": {
+          "package_name": "com.example.ha_pump"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "842408901380-peig0289pko5gh9qm1hhhg1a9s85ens3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2dduC183HgxoVIOGw8tCTawg1XaG4QqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "842408901380-peig0289pko5gh9qm1hhhg1a9s85ens3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

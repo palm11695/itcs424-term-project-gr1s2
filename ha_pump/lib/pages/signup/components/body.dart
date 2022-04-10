@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ha_pump/pages/signup/components/background.dart';
 import 'package:ha_pump/components/already_have_an_account_acheck.dart';
+import 'package:ha_pump/components/auth_button.dart';
 import 'package:ha_pump/components/rounded_button.dart';
 import 'package:ha_pump/components/rounded_input_field.dart';
 import 'package:ha_pump/components/rounded_password_field.dart';
@@ -12,6 +13,8 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
     Size size = MediaQuery.of(context).size;
     return Background(
       child: SingleChildScrollView(
@@ -31,9 +34,11 @@ class Body extends StatelessWidget {
             RoundedInputField(
               hintText: "Your Email",
               onChanged: (value) {},
+              controller: emailController,
             ),
             RoundedPasswordField(
               onChanged: (value) {},
+              controller: passwordController,
             ),
             RoundedConfirmedPasswordField(
               onChanged: (value) {},
@@ -41,6 +46,11 @@ class Body extends StatelessWidget {
             const RoundedButton(
               text: "SIGNUP",
               route: '/signup',
+            ),
+            AuthButton(
+              text: "SIGN UP",
+              email: emailController.text,
+              password: passwordController.text,
             ),
             SizedBox(height: size.height * 0.03),
             const AlreadyHaveAnAccountCheck(login: false, route: '/login'),
