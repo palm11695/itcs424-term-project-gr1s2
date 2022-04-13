@@ -134,7 +134,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         return const Finder();
                                       }));
                                     });
-                                  } on FirebaseAuthException catch (e) {}
+                                  } on FirebaseAuthException catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(e.message!,
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            backgroundColor: Colors.red[400]));
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(

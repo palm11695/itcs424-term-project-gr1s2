@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ha_pump/pages/finder/components/background.dart';
 import 'package:ha_pump/pages/login/login_screen.dart';
+import 'package:ha_pump/pages/map/map_screen.dart';
+import 'package:ha_pump/model/gas_station.dart';
 import 'package:ha_pump/theme.dart';
 
 class Finder extends StatefulWidget {
@@ -12,6 +14,22 @@ class Finder extends StatefulWidget {
 
 class _FinderState extends State<Finder> {
   FirebaseAuth auth = FirebaseAuth.instance;
+  bool isDefault = true;
+  String searchQuery = "";
+  GasStation temp = GasStation(
+    name: 'P.T.T Gas Station',
+    address:
+        '99, 10 หมู่ 1 Borommaratchachonnani Rd, Bang Toei, Sam Phran District, Nakhon Pathom 73210',
+    contact: '090-3434030',
+    imageUrl: [
+      'https://i1.wp.com/www.bizpromptinfo.com/wp-content/uploads/2019/04/%E0%B8%9B%E0%B8%95%E0%B8%97.jpeg?resize=700%2C420',
+      'https://i1.wp.com/www.bizpromptinfo.com/wp-content/uploads/2019/04/%E0%B8%9B%E0%B8%95%E0%B8%97.jpeg?resize=700%2C420',
+    ],
+    latLng: [13.7945516, 100.324395],
+    range: 13,
+  );
+  List<GasStation> gasStations = [];
+  late GasStation selectedStation;
 
   @override
   Widget build(BuildContext context) {
@@ -23,29 +41,31 @@ class _FinderState extends State<Finder> {
         }));
       }
     });
-    Size size = MediaQuery.of(context).size;
-    String? currentEmail = auth.currentUser!.email;
 
     return Scaffold(
-      body: Background(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                "Welcome To Ha Pump!\n",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Text(currentEmail!),
-              SizedBox(height: size.height * 0.02),
-              // SvgPicture.asset(
-              //   "assets/icons/chat.svg",
-              //   height: size.height * 0.45,
-              // ),
-              ElevatedButton(
+      appBar: AppBar(
+        title: Container(
+          margin: const EdgeInsets.only(left: 10),
+          child: const Text(
+            "Ha Pump",
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        backgroundColor: kPrimaryColor,
+        actions: <Widget>[
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ElevatedButton(
                   child: const Text(
                     "Sign out",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black),
                   ),
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut();
@@ -53,9 +73,254 @@ class _FinderState extends State<Finder> {
                         MaterialPageRoute(builder: (context) {
                       return const LoginScreen();
                     }));
-                  }),
-            ],
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.white,
+                  )),
+            ),
+          )
+        ],
+      ),
+      backgroundColor: kPrimaryColor,
+      body: isDefault ? defaultBody() : detailPage(),
+    );
+  }
+
+  Widget defaultBody() {
+    Size size = MediaQuery.of(context).size;
+    return Background(
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: size.height * 0.02),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: size.width * 0.07),
+            padding: EdgeInsets.only(left: size.width * 0.05),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.5),
+                  blurRadius: 2,
+                  offset: const Offset(0, 3),
+                )
+              ],
+            ),
+            child: TextField(
+              cursorColor: Colors.black,
+              onChanged: (String value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+              decoration: InputDecoration(
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search, color: Colors.black),
+                  onPressed: () {
+                    gasStations.add(temp);
+                    setState(() {});
+                  },
+                ),
+                border: InputBorder.none,
+              ),
+            ),
           ),
+          SizedBox(height: size.height * 0.02),
+          Expanded(
+            child: ListView.builder(
+              itemCount: gasStations.length,
+              itemBuilder: (context, index) {
+                final gasStation = gasStations[index];
+                return GestureDetector(
+                  onTap: () => {
+                    setState(() {
+                      isDefault = false;
+                      selectedStation = gasStation;
+                    }),
+                  },
+                  child: buildImageInteractionCard(gasStation),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget detailPage() {
+    Size size = MediaQuery.of(context).size;
+    return Background(
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: size.height * 0.02),
+          buildDetailCard(selectedStation),
+        ],
+      ),
+    );
+  }
+
+  Widget buildImageInteractionCard(GasStation gasStation) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(5, 5),
+          )
+        ],
+      ),
+      margin: EdgeInsets.only(
+          left: size.width * 0.06,
+          right: size.width * 0.06,
+          bottom: size.width * 0.03),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Ink.image(
+              image: NetworkImage(
+                gasStation.imageUrl[0],
+              ),
+              height: 210,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    gasStation.name,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    "${gasStation.range} km.",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildDetailCard(GasStation gasStation) {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(5, 5),
+          )
+        ],
+      ),
+      margin: EdgeInsets.only(
+          left: size.width * 0.06,
+          right: size.width * 0.06,
+          bottom: size.width * 0.03),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_circle_left),
+                        onPressed: () {
+                          setState(() {
+                            isDefault = true;
+                          });
+                        },
+                      ),
+                      Text(
+                        gasStation.name,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      "${gasStation.range} KM.",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Ink.image(
+              image: NetworkImage(
+                gasStation.imageUrl[0],
+              ),
+              height: 210,
+              fit: BoxFit.cover,
+            ),
+            Ink.image(
+              image: NetworkImage(
+                gasStation.imageUrl[1],
+              ),
+              height: 210,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              margin: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.map_outlined),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Map(gasStation.latLng)));
+                        },
+                      ),
+                      const Text("Map Link"),
+                    ],
+                  ),
+                  Text(
+                    gasStation.address,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.phone),
+                        Container(
+                          margin: const EdgeInsets.only(left: 15),
+                          child: Text(gasStation.contact),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
