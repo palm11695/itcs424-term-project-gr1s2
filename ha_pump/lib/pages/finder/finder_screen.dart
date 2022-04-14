@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ha_pump/pages/finder/components/background.dart';
@@ -16,20 +17,13 @@ class _FinderState extends State<Finder> {
   FirebaseAuth auth = FirebaseAuth.instance;
   bool isDefault = true;
   String searchQuery = "";
-  GasStation temp = GasStation(
-    name: 'P.T.T Gas Station',
-    address:
-        '99, 10 หมู่ 1 Borommaratchachonnani Rd, Bang Toei, Sam Phran District, Nakhon Pathom 73210',
-    contact: '090-3434030',
-    imageUrl: [
-      'https://i1.wp.com/www.bizpromptinfo.com/wp-content/uploads/2019/04/%E0%B8%9B%E0%B8%95%E0%B8%97.jpeg?resize=700%2C420',
-      'https://i1.wp.com/www.bizpromptinfo.com/wp-content/uploads/2019/04/%E0%B8%9B%E0%B8%95%E0%B8%97.jpeg?resize=700%2C420',
-    ],
-    latLng: [13.7945516, 100.324395],
-    range: 13,
-  );
-  List<GasStation> gasStations = [];
   late GasStation selectedStation;
+  final gasStationsRef = FirebaseFirestore.instance
+      .collection('gas_stations')
+      .withConverter<GasStation>(
+        fromFirestore: (snapshots, _) => GasStation.fromJson(snapshots.data()!),
+        toFirestore: (gasStation, _) => gasStation.toJson(),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -88,64 +82,85 @@ class _FinderState extends State<Finder> {
 
   Widget defaultBody() {
     Size size = MediaQuery.of(context).size;
-    return Background(
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: size.height * 0.02),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: size.width * 0.07),
-            padding: EdgeInsets.only(left: size.width * 0.05),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  blurRadius: 2,
-                  offset: const Offset(0, 3),
-                )
+    return StreamBuilder<QuerySnapshot<GasStation>>(
+        stream: gasStationsRef
+            .where('name', isGreaterThanOrEqualTo: searchQuery)
+            .where(
+              'name',
+              isLessThan: searchQuery + 'z',
+              // add 'z' for make the boundary
+            )
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final gasStations = snapshot.requireData;
+
+          return Background(
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: size.height * 0.02),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: size.width * 0.07),
+                  padding: EdgeInsets.only(left: size.width * 0.05),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 2,
+                        offset: const Offset(0, 3),
+                      )
+                    ],
+                  ),
+                  child: TextField(
+                    cursorColor: Colors.black,
+                    onChanged: (String value) {
+                      setState(() {
+                        searchQuery = value;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.search, color: Colors.black),
+                        onPressed: () {
+                          setState(() {});
+                        },
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: size.height * 0.02),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: gasStations.size,
+                    itemBuilder: (context, index) {
+                      final gasStation = gasStations.docs[index].data();
+                      return GestureDetector(
+                        onTap: () => {
+                          setState(() {
+                            isDefault = false;
+                            selectedStation = gasStation;
+                          }),
+                        },
+                        child: buildImageInteractionCard(gasStation),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
-            child: TextField(
-              cursorColor: Colors.black,
-              onChanged: (String value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search, color: Colors.black),
-                  onPressed: () {
-                    gasStations.add(temp);
-                    setState(() {});
-                  },
-                ),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-          SizedBox(height: size.height * 0.02),
-          Expanded(
-            child: ListView.builder(
-              itemCount: gasStations.length,
-              itemBuilder: (context, index) {
-                final gasStation = gasStations[index];
-                return GestureDetector(
-                  onTap: () => {
-                    setState(() {
-                      isDefault = false;
-                      selectedStation = gasStation;
-                    }),
-                  },
-                  child: buildImageInteractionCard(gasStation),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+          );
+        });
   }
 
   Widget detailPage() {

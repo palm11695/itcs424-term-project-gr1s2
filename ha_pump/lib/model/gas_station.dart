@@ -8,7 +8,7 @@ class GasStation {
     required this.range,
   });
 
-  GasStation.fromJSON(Map<String, Object?> json)
+  GasStation.fromJson(Map<String, Object?> json)
       : this(
           imageUrl: (json['imageUrl']! as List).cast<String>(),
           name: json['name']! as String,
