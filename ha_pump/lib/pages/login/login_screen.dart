@@ -38,7 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: size.height * 0.03),
-                        const Text("Waiting For Banner/Picture"),
+                        const Text(
+                          "Login with your Registered email",
+                          style: TextStyle(letterSpacing: 0.5),
+                        ),
                         SizedBox(height: size.height * 0.03),
                         Form(
                           key: formKey,

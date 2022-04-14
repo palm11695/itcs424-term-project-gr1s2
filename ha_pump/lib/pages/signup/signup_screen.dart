@@ -38,7 +38,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: size.height * 0.03),
-                        const Text("Waiting For Banner/Picture"),
+                        Image(
+                            height: size.height * 0.1,
+                            image: const AssetImage(
+                                'assets/images/gas-station.png')),
                         SizedBox(height: size.height * 0.03),
                         Form(
                           key: formKey,

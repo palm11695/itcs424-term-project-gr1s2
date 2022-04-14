@@ -19,12 +19,13 @@ class WelcomeScreen extends StatelessWidget {
                 "WELCOME TO HA PUMP",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: size.height * 0.05),
-              // SvgPicture.asset(
-              //   "assets/icons/chat.svg",
-              //   height: size.height * 0.45,
-              // ),
-              SizedBox(height: size.height * 0.05),
+              SizedBox(height: size.height * 0.02),
+              const Text("Gas Stations Finder",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 3,
+                  )),
+              SizedBox(height: size.height * 0.08),
               const RoundedButton(text: "LOGIN", route: '/login'),
               const RoundedButton(
                 text: "SIGN UP",
