@@ -276,7 +276,7 @@ class _FinderState extends State<Finder> {
                   Container(
                     margin: const EdgeInsets.only(right: 10),
                     child: Text(
-                      "${gasStation.range} KM.",
+                      "${gasStation.range} km.",
                       style: const TextStyle(fontSize: 16),
                     ),
                   ),
